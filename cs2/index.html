@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CS2 Case Simulator</title>
+  <meta name="description" content="Open real CS2 cases with real odds and real prices. No real money.">
+  <meta name="theme-color" content="#000000">
+  <link rel="icon" href="img/crates/kilowatt-case.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="top-l">
+      <a class="exit" href="../index.html"><span aria-hidden="true">←</span> Tokarcade</a>
+      <button class="sound" id="sound" type="button"></button>
+    </div>
+    <nav class="slider" id="slider" data-on="cases" aria-label="Sections">
+      <i class="knob" aria-hidden="true"></i>
+      <a href="#/" data-tab="cases">Cases</a>
+      <a href="#/inventory" data-tab="inventory">Inventory<b id="inv-count"></b></a>
+    </nav>
+    <div class="top-r">
+      <div class="credits"><small>Credits</small><b id="balance">$0.00</b></div>
+      <button class="refill" id="refill" type="button">Refill</button>
+    </div>
+  </header>
+
+  <main id="view" tabindex="-1"></main>
+
+  <section class="opening" id="opening" role="dialog" aria-modal="true" aria-label="Opening case" hidden></section>
+  <dialog class="sheet" id="sheet"></dialog>
+  <div class="toast" id="toast" role="status"></div>
+
+  <footer class="foot">
+    <span id="foot-prices"></span>
+    <span>A fan-made game. No real money, no real items. Not affiliated with Valve.</span>
+  </footer>
+
+  <noscript>This game needs JavaScript.</noscript>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

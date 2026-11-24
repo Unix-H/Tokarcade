@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reaction Test · Tokarcade</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='11' height='11' fill='%232f63ff'/%3E%3Crect x='13' width='11' height='11' fill='%23e8efff'/%3E%3Crect y='13' width='11' height='11' fill='%23e8efff'/%3E%3Crect x='13' y='13' width='11' height='11' fill='%232f63ff'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .pad {
+      position: relative; overflow: hidden; width: max(300px, min(var(--w), calc((var(--h) - 90px) * 1.6))); aspect-ratio: 16 / 10;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center;
+      background: var(--bg); border: 1px solid var(--line); cursor: pointer; user-select: none; -webkit-user-select: none;
+      transition: background 0.18s linear, color 0.18s;
+    }
+    .pad.s-wait { background: #0d2766; }
+    .pad.s-go { background: var(--ice); color: #06102b; transition: none; }
+    .pad.s-early { background: #1a1f3d; }
+    .pad h2 { font-size: clamp(40px, 7vw, 110px); font-weight: 800; letter-spacing: -0.04em; line-height: 1; padding: 0 16px; }
+    .pad p { font-family: var(--mono); font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mute); }
+    .pad.s-go p { color: #3a4a7a; }
+    .pad .ripple { position: absolute; left: 50%; top: 50%; width: 40px; height: 40px; margin: -20px; border: 2px solid var(--blue); opacity: 0; pointer-events: none; }
+    .pad.s-wait .ripple { animation: wait-ring 1.6s var(--ease) infinite; }
+    @keyframes wait-ring { 0% { transform: scale(0.5); opacity: 0.9; } 100% { transform: scale(9); opacity: 0; } }
+    .hist { display: flex; gap: 6px; margin-top: 14px; }
+    .hist i { flex: 1; height: 38px; position: relative; background: var(--bg); border: 1px solid var(--line); }
+    .hist i b { position: absolute; left: 0; right: 0; bottom: 0; background: var(--blue); transform-origin: bottom; animation: grow 0.5s var(--ease) both; }
+    @keyframes grow { from { transform: scaleY(0); } }
+    .hist-label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mute); margin-top: 16px; }
+  </style>
+</head>
+<body class="game">
+  <header class="gnav">
+    <a class="back" href="../index.html"><span>←</span> All games</a>
+    <div class="gtitle">Reaction Test</div>
+    <div class="hud">
+      <div><small>Last</small><b id="score">–</b></div>
+      <div><small>Best</small><b id="best">–</b></div>
+    </div>
+  </header>
+
+  <main class="play">
+    <section class="stage">
+      <div class="screen">
+        <div class="pad s-idle" id="pad" role="button" tabindex="0">
+          <span class="ripple"></span>
+          <h2 id="pad-t">Click to start</h2>
+          <p id="pad-s">Or press space</p>
+        </div>
+      </div>
+      <div class="hist-label">Last 8 attempts</div>
+      <div class="hist" id="hist"></div>
+    </section>
+
+    <aside class="howto">
+      <h3>How to play</h3>
+      <ul>
+        <li><span>Click to arm the pad.</span></li>
+        <li><span>When it flashes white, hit it as fast as you can. Click early and the round is void.</span></li>
+        <li><span>Most people land between 200 and 300 ms.</span></li>
+      </ul>
+      <div class="stats">
+        <div>Average <b id="avg">–</b></div>
+        <div>Attempts <b id="count">0</b></div>
+      </div>
+    </aside>
+  </main>
+
+  <script src="../js/common.js"></script>
+  <script src="../js/reaction.js"></script>
+</body>
+</html>

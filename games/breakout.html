@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Breakout · Tokarcade</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='11' height='11' fill='%232f63ff'/%3E%3Crect x='13' width='11' height='11' fill='%23e8efff'/%3E%3Crect y='13' width='11' height='11' fill='%23e8efff'/%3E%3Crect x='13' y='13' width='11' height='11' fill='%232f63ff'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .screen canvas { width: calc(var(--sz) * 0.857); cursor: none; touch-action: none; }
+  </style>
+</head>
+<body class="game">
+  <header class="gnav">
+    <a class="back" href="../index.html"><span>←</span> All games</a>
+    <div class="gtitle">Breakout</div>
+    <div class="hud">
+      <div><small>Score</small><b id="score">0</b></div>
+      <div><small>Best</small><b id="best">0</b></div>
+    </div>
+  </header>
+
+  <main class="play">
+    <section class="stage" id="stage">
+      <div class="screen">
+        <canvas id="cv" width="480" height="560"></canvas>
+        <div class="overlay" id="overlay">
+          <p class="kicker" id="ov-kicker">Ready</p>
+          <h2 id="ov-title">Breakout</h2>
+          <p class="sub" id="ov-sub">Move the paddle with your mouse, finger or arrow keys. Click or press space to launch.</p>
+          <button class="btn" id="ov-btn">Start</button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="howto">
+      <h3>How to play</h3>
+      <ul>
+        <li><span>Mouse / touch</span> <span>or</span> <kbd>←</kbd><kbd>→</kbd> <span>to move</span></li>
+        <li><kbd>Space</kbd> <span>launch the ball / pause</span></li>
+        <li><span>Hit the ball with the paddle’s edge to change its angle. Higher rows score more. You have three lives.</span></li>
+      </ul>
+      <div class="stats">
+        <div>Level <b id="level">1</b></div>
+        <div>Lives <b id="lives">3</b></div>
+      </div>
+    </aside>
+  </main>
+
+  <script src="../js/common.js"></script>
+  <script src="../js/breakout.js"></script>
+</body>
+</html>

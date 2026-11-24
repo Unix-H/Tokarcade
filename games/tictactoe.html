@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tic-Tac-Toe · Tokarcade</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='11' height='11' fill='%232f63ff'/%3E%3Crect x='13' width='11' height='11' fill='%23e8efff'/%3E%3Crect y='13' width='11' height='11' fill='%23e8efff'/%3E%3Crect x='13' y='13' width='11' height='11' fill='%232f63ff'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .tboard { position: relative; width: calc(var(--sz) - 50px); aspect-ratio: 1; }
+    .tcells { position: absolute; inset: 0; display: grid; grid-template: repeat(3, 1fr) / repeat(3, 1fr); }
+    .tcell { background: none; border: 0; cursor: pointer; display: grid; place-items: center; transition: background 0.25s; color: var(--ice); }
+    .tcell:hover:not(:disabled) { background: rgba(47, 99, 255, 0.16); }
+    .tcell:disabled { cursor: default; }
+    .tcell svg { width: 56%; height: 56%; fill: none; stroke: currentColor; stroke-width: 7; stroke-linecap: square; overflow: visible; }
+    .tcell.o svg { color: var(--blue-hi); }
+    .tcell svg path, .tcell svg circle { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 0.35s var(--ease) forwards; }
+    .tcell svg path + path { animation-delay: 0.12s; }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    .tlines, .tstrike { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    .tlines path { stroke: var(--line2); stroke-width: 2; fill: none; }
+    .tstrike path { stroke: #fff; stroke-width: 8; stroke-linecap: square; fill: none; stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 0.5s var(--ease) 0.1s forwards; }
+    .tcell.dim { opacity: 0.35; transition: opacity 0.4s; }
+
+    .seg { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line2); margin-bottom: 20px; }
+    .seg button { background: none; border: 0; padding: 11px; cursor: pointer; font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); transition: background 0.3s var(--ease), color 0.3s; }
+    .seg button.on { background: var(--blue); color: #fff; }
+    .seg button:not(.on):hover { color: var(--ice); }
+    #status { font-family: var(--mono); font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mute); text-align: center; margin-top: 12px; min-height: 1.4em; }
+  </style>
+</head>
+<body class="game">
+  <header class="gnav">
+    <a class="back" href="../index.html"><span>←</span> All games</a>
+    <div class="gtitle">Tic-Tac-Toe</div>
+    <div class="hud">
+      <div><small>Wins</small><b id="score">0</b></div>
+      <div><small>All-time</small><b id="best">0</b></div>
+    </div>
+  </header>
+
+  <main class="play">
+    <section class="stage">
+      <div class="screen">
+        <div class="tboard" id="board">
+          <svg class="tlines" viewBox="0 0 300 300" aria-hidden="true"><path d="M100 8V292M200 8V292M8 100H292M8 200H292"/></svg>
+          <div class="tcells" id="cells"></div>
+          <svg class="tstrike" id="strike" viewBox="0 0 300 300" aria-hidden="true"></svg>
+        </div>
+      </div>
+      <div id="status">Your move</div>
+    </section>
+
+    <aside class="howto">
+      <h3>Difficulty</h3>
+      <div class="seg" id="seg"><button data-m="easy" class="on">Easy</button><button data-m="hard">Hard</button></div>
+      <h3>How to play</h3>
+      <ul>
+        <li><span>You are <b>X</b>. Click a square to play.</span></li>
+        <li><span>Three in a row wins. Easy plays at random; hard never loses, so aim for a draw.</span></li>
+      </ul>
+      <div class="stats">
+        <div>You <b id="w">0</b></div>
+        <div>Draws <b id="d">0</b></div>
+        <div>CPU <b id="l">0</b></div>
+      </div>
+      <button class="btn ghost" id="again" style="margin-top:22px">New round</button>
+    </aside>
+  </main>
+
+  <script src="../js/common.js"></script>
+  <script src="../js/tictactoe.js"></script>
+</body>
+</html>

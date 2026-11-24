@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Snake · Tokarcade</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='11' height='11' fill='%232f63ff'/%3E%3Crect x='13' width='11' height='11' fill='%23e8efff'/%3E%3Crect y='13' width='11' height='11' fill='%23e8efff'/%3E%3Crect x='13' y='13' width='11' height='11' fill='%232f63ff'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="game">
+  <header class="gnav">
+    <a class="back" href="../index.html"><span>←</span> All games</a>
+    <div class="gtitle">Snake</div>
+    <div class="hud">
+      <div><small>Score</small><b id="score">0</b></div>
+      <div><small>Best</small><b id="best">0</b></div>
+    </div>
+  </header>
+
+  <main class="play">
+    <section class="stage" id="stage">
+      <div class="screen">
+        <canvas id="cv" width="400" height="400"></canvas>
+        <div class="overlay" id="overlay">
+          <p class="kicker" id="ov-kicker">Ready</p>
+          <h2 id="ov-title">Snake</h2>
+          <p class="sub" id="ov-sub">Press space, an arrow key, or tap to start.</p>
+          <button class="btn" id="ov-btn">Start</button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="howto">
+      <h3>How to play</h3>
+      <ul>
+        <li><kbd>←</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>→</kbd> <span>or WASD to steer</span></li>
+        <li><kbd>Space</kbd> <span>pause / resume</span></li>
+        <li><span>On touch, swipe on the board.</span></li>
+        <li><span>Every bite makes you a little faster. Walls and your own tail are fatal.</span></li>
+      </ul>
+    </aside>
+  </main>
+
+  <script src="../js/common.js"></script>
+  <script src="../js/snake.js"></script>
+</body>
+</html>

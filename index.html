@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tokarcade</title>
+  <meta name="description" content="Quick browser games. No installs, no accounts.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='11' height='11' fill='%232f63ff'/%3E%3Crect x='13' width='11' height='11' fill='%23e8efff'/%3E%3Crect y='13' width='11' height='11' fill='%23e8efff'/%3E%3Crect x='13' y='13' width='11' height='11' fill='%232f63ff'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script>document.documentElement.classList.add("js")</script>
+</head>
+<body>
+  <canvas id="trail" aria-hidden="true"></canvas>
+
+  <header class="nav">
+    <a class="logo" href="index.html">
+      <span class="logo-mark"><i></i><i></i><i></i><i></i></span>
+      Tokarcade
+    </a>
+    <div class="nav-meta"><b>06</b> games · free · no sign-in</div>
+  </header>
+
+  <section class="hero">
+    <h1>
+      <span class="line"><span style="--d:80">Pick a game.</span></span>
+      <span class="line outline"><span style="--d:200">Lose an hour.</span></span>
+    </h1>
+    <div class="hero-row">
+      <p class="lede">Small games that run right in your browser. No downloads, no accounts. Your best scores stay on this device.</p>
+      <a class="btn" href="#games">Browse games</a>
+    </div>
+  </section>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track" id="ticker">
+      <span>Snake</span><span>■</span><span>2048</span><span>■</span><span>Tic-Tac-Toe</span><span>■</span><span>Reaction Test</span><span>■</span><span>Breakout</span><span>■</span><span>CS2 Case Simulator</span><span>■</span>
+    </div>
+  </div>
+
+  <main class="games" id="games">
+    <div class="sec-head"><h2>All games</h2><span>06 available</span></div>
+
+    <div class="grid">
+
+      <!-- 01 Snake -->
+      <a class="card" href="games/snake.html" style="--i:0">
+        <div class="thumb-wrap">
+          <svg class="thumb t-snake" viewBox="0 0 200 120" fill="none" stroke="currentColor" aria-hidden="true">
+            <path class="snk" d="M24 92H84V52H134V82H172" pathLength="100" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter"/>
+            <rect class="food" x="180" y="77" width="10" height="10"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="card-top"><span>01 · Arcade</span><span data-best="snake"></span></div>
+          <h3>Snake</h3>
+          <p>Eat, grow, and try not to bite yourself. It gets quick.</p>
+          <div class="card-foot"><span>1 player</span><span class="go">Play <span class="arrow">→</span></span></div>
+        </div>
+      </a>
+
+      <!-- 02 2048 -->
+      <a class="card" href="games/2048.html" style="--i:1">
+        <div class="thumb-wrap">
+          <svg class="thumb t-2048" viewBox="0 0 200 120" fill="none" stroke="currentColor" aria-hidden="true">
+            <g class="tl r1" style="--k:0"><rect x="20" y="20" width="40" height="40"/><text x="40" y="46">2</text></g>
+            <g class="tl r1" style="--k:1"><rect x="68" y="20" width="40" height="40"/><text x="88" y="46">4</text></g>
+            <g class="tl r2" style="--k:0"><rect x="108" y="68" width="40" height="40"/><text x="128" y="94">8</text></g>
+            <g class="tl r2" style="--k:1"><rect x="152" y="68" width="40" height="40"/><text x="172" y="94">2</text></g>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="card-top"><span>02 · Puzzle</span><span data-best="2048"></span></div>
+          <h3>2048</h3>
+          <p>Slide the tiles, merge the matches, and chase the big one.</p>
+          <div class="card-foot"><span>1 player</span><span class="go">Play <span class="arrow">→</span></span></div>
+        </div>
+      </a>
+
+
+      <!-- 04 Tic-tac-toe -->
+      <a class="card" href="games/tictactoe.html" style="--i:2">
+        <div class="thumb-wrap">
+          <svg class="thumb t-ttt" viewBox="0 0 200 120" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square" aria-hidden="true">
+            <path d="M84 12V108M116 12V108M52 44H148M52 76H148" stroke-width="2"/>
+            <path d="M60 20L76 36M76 20L60 36"/>
+            <circle cx="100" cy="28" r="9"/>
+            <path d="M92 52L108 68M108 52L92 68"/>
+            <circle cx="68" cy="60" r="9"/>
+            <path class="draw d1" pathLength="1" d="M124 84L140 100"/>
+            <path class="draw d2" pathLength="1" d="M140 84L124 100"/>
+            <path class="draw win" pathLength="1" d="M56 16L144 104" stroke-width="5"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="card-top"><span>03 · Classic</span><span data-best="tictactoe"></span></div>
+          <h3>Tic-Tac-Toe</h3>
+          <p>Take on the computer. Easy mode is fair; hard mode is not.</p>
+          <div class="card-foot"><span>vs CPU</span><span class="go">Play <span class="arrow">→</span></span></div>
+        </div>
+      </a>
+
+      <!-- 05 Reaction -->
+      <a class="card" href="games/reaction.html" style="--i:3">
+        <div class="thumb-wrap">
+          <svg class="thumb t-react" viewBox="0 0 200 120" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle class="ring" style="--k:2" cx="100" cy="60" r="54" opacity=".25"/>
+            <circle class="ring" style="--k:1" cx="100" cy="60" r="40" opacity=".5"/>
+            <circle class="ring" style="--k:0" cx="100" cy="60" r="26"/>
+            <circle class="core" cx="100" cy="60" r="12"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="card-top"><span>04 · Skill</span><span data-best="reaction"></span></div>
+          <h3>Reaction Test</h3>
+          <p>Wait for the signal, then click. How fast are you, really?</p>
+          <div class="card-foot"><span>1 player</span><span class="go">Play <span class="arrow">→</span></span></div>
+        </div>
+      </a>
+
+      <!-- 06 Breakout -->
+      <a class="card" href="games/breakout.html" style="--i:4">
+        <div class="thumb-wrap">
+          <svg class="thumb t-brk" viewBox="0 0 200 120" fill="currentColor" aria-hidden="true">
+            <g>
+              <rect x="18" y="14" width="24" height="10"/><rect x="46" y="14" width="24" height="10"/><rect x="74" y="14" width="24" height="10"/><rect x="102" y="14" width="24" height="10"/><rect x="130" y="14" width="24" height="10"/><rect x="158" y="14" width="24" height="10"/>
+              <rect x="18" y="28" width="24" height="10" opacity=".7"/><rect x="46" y="28" width="24" height="10" opacity=".7"/><rect x="74" y="28" width="24" height="10" opacity=".7"/><rect x="102" y="28" width="24" height="10" opacity=".7"/><rect x="130" y="28" width="24" height="10" opacity=".7"/><rect x="158" y="28" width="24" height="10" opacity=".7"/>
+              <rect x="18" y="42" width="24" height="10" opacity=".45"/><rect x="46" y="42" width="24" height="10" opacity=".45"/><rect x="74" y="42" width="24" height="10" opacity=".45"/><rect x="102" y="42" width="24" height="10" opacity=".45"/><rect class="gone" x="130" y="42" width="24" height="10" opacity=".45"/><rect x="158" y="42" width="24" height="10" opacity=".45"/>
+            </g>
+            <rect class="pad" x="80" y="104" width="40" height="6"/>
+            <circle class="ball" cx="100" cy="94" r="4"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="card-top"><span>05 · Arcade</span><span data-best="breakout"></span></div>
+          <h3>Breakout</h3>
+          <p>Bounce the ball, break every brick, and keep it off the floor.</p>
+          <div class="card-foot"><span>1 player</span><span class="go">Play <span class="arrow">→</span></span></div>
+        </div>
+      </a>
+
+      <!-- 06 CS2 Case Simulator -->
+      <a class="card" href="cs2/index.html" style="--i:5">
+        <div class="thumb-wrap">
+          <svg class="thumb t-case" viewBox="0 0 200 120" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <clipPath id="reel"><rect x="14" y="26" width="172" height="68"/></clipPath>
+            <g clip-path="url(#reel)"><g class="reel">
+              <path d="M-166 34h44v52h-44zM-114 34h44v52h-44zM-62 34h44v52h-44zM-10 34h44v52h-44zM42 34h44v52h-44zM94 34h44v52h-44zM146 34h44v52h-44z"/>
+              <path stroke-width="6" d="M-166 83h44M-114 83h44M-62 83h44M-10 83h44M42 83h44M94 83h44M146 83h44"/>
+            </g></g>
+            <path d="M14 26H186M14 94H186"/><path d="M100 20V100" stroke-width="3"/>
+            <path d="M94 16h12l-6 8zM94 104h12l-6-8z" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <div class="card-body">
+          <div class="card-top"><span>06 · Simulator</span></div>
+          <h3>CS2 Case Simulator</h3>
+          <p>42 real cases, real odds, real prices. Open as many as you like.</p>
+          <div class="card-foot"><span>1 player</span><span class="go">Play <span class="arrow">→</span></span></div>
+        </div>
+      </a>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <span>TOKARCADE</span>
+    <span>Plain HTML, CSS &amp; JS. Scores live in your browser.</span>
+  </footer>
+
+  <script src="js/common.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
