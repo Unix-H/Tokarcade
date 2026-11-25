@@ -3,7 +3,7 @@
   const { cases: CASES, skins: SKINS, updated } = window.CS2_DATA;
 
   /* ───────── rules ───────── */
-  const START = 1000000 * 100; // first budget, in cents: 1000k
+  const START = 1000 * 100; // first budget and refill level, in cents: $1,000
   const ODDS = [0.7992, 0.1598, 0.032, 0.0064, 0.0026]; // published drop rates, Mil-Spec → special
   const GRADE = ["Mil-Spec", "Restricted", "Classified", "Covert", "Rare Special"];
   const ST_CHANCE = 0.1;
@@ -37,19 +37,34 @@
   /* ───────── saved state ───────── */
   const KEY = "toka:cs2sim";
   // inv rows: [skin key, wear, stattrak, float, price, case id, time]
-  const fresh = () => ({ bal: START, inv: [], opened: 0, spent: 0, won: 0, pending: null, mute: false });
+  const fresh = () => ({ v: 3, bal: START, inv: [], opened: 0, spent: 0, won: 0, sold: 0, pending: null, mute: false });
+  const invValue = (rows) => rows.reduce((t, r) => t + r[4], 0);
   let S = fresh();
   function load() {
     try {
       const raw = JSON.parse(localStorage.getItem(KEY));
-      if (raw && Number.isFinite(raw.bal) && Array.isArray(raw.inv)) S = Object.assign(fresh(), raw);
+      if (raw && Number.isFinite(raw.bal) && Array.isArray(raw.inv)) {
+        S = Object.assign(fresh(), raw);
+        if (!raw.v) { // older saves paid every drop out straight away; now skins are sold by hand
+          const held = invValue(S.inv);
+          S.bal = Math.max(0, S.bal - held);
+          S.sold = S.won - held;
+        }
+        if ((raw.v || 0) < 3) { // the budget used to be $1,000,000
+          S.bal = Math.min(S.bal, START);
+          S.v = 3;
+          save();
+        }
+      }
     } catch (e) { /* no storage: keep playing in memory */ }
   }
   function save() {
     for (let tries = 0; tries < 4; tries++) {
       try { localStorage.setItem(KEY, JSON.stringify(S)); return; } catch (e) {
         if (S.inv.length < 1000) return;
-        S.inv = S.inv.slice(-Math.floor(S.inv.length * 0.8)); // storage full: let the oldest drops go
+        // storage full: sell the oldest fifth so nothing is lost
+        const old = S.inv.splice(0, Math.ceil(S.inv.length * 0.2)), v = invValue(old);
+        S.bal += v; S.sold += v;
       }
     }
   }
@@ -60,7 +75,6 @@
     const row = S.pending.row;
     S.pending = null;
     S.inv.push(row);
-    S.bal += row[4];
     S.won += row[4];
     save();
   }
@@ -195,19 +209,24 @@
   }
 
   const invUi = { r: -1, sort: "new", n: 60 };
-  function pageInventory() {
-    const net = S.won - S.spent;
-    view.innerHTML = `<div class="page"><div class="bar"><h1>Inventory</h1></div>
+  function pageInventory(still) {
+    const held = invValue(S.inv), net = S.sold + held - S.spent;
+    view.innerHTML = `<div class="page${still ? " still" : ""}"><div class="bar"><h1>Inventory</h1></div>
       <div class="stats"><div><small>Cases opened</small><b>${S.opened.toLocaleString("en-US")}</b></div><div><small>Spent on cases</small><b>${usd(S.spent)}</b></div>
-      <div><small>Won in skins</small><b>${usd(S.won)}</b></div><div><small>Profit</small><b class="${net < 0 ? "neg" : "pos"}">${signed(net)}</b></div></div><div id="inv"></div></div>`;
+      <div><small>Sold for</small><b>${usd(S.sold)}</b></div><div><small>Inventory value</small><b>${usd(held)}</b></div>
+      <div><small>Profit</small><b class="${net < 0 ? "neg" : "pos"}">${signed(net)}</b></div></div><div id="inv"></div></div>`;
     if (!S.inv.length) {
-      $("inv").innerHTML = `<div class="empty"><h2>No skins yet</h2><p>Every skin you open is kept here, and its price is added to your credits.</p><a class="open-btn" href="#/">Choose a case</a></div>`;
+      $("inv").innerHTML = `<div class="empty"><h2>${S.opened ? "Inventory empty" : "No skins yet"}</h2><p>Every skin you open lands here. Sell skins to turn them into credits.</p><a class="open-btn" href="#/">Choose a case</a></div>`;
       return;
     }
     $("inv").innerHTML = `<div class="bar"><div class="chips" id="chips"><button type="button" class="chip" data-r="-1">All</button>${[4, 3, 2, 1, 0].map((r) => `<button type="button" class="chip c${r}" data-r="${r}">${GRADE[r]}</button>`).join("")}</div>
-      <div class="tools"><select class="field" id="isort" aria-label="Sort inventory"><option value="new">Newest first</option><option value="hi">Price: high to low</option><option value="lo">Price: low to high</option></select></div></div><div class="skins" id="grid"></div><button type="button" class="plain more" id="more">Show more</button>`;
+      <div class="tools"><button type="button" class="sell-all" id="sellall"></button><select class="field" id="isort" aria-label="Sort inventory"><option value="new">Newest first</option><option value="hi">Price: high to low</option><option value="lo">Price: low to high</option></select></div></div><div class="skins" id="grid"></div><button type="button" class="plain more" id="more">Show more</button>`;
+    let shownRows = [];
     const list = () => {
       let rows = S.inv.map((row, i) => ({ row, i, s: byKey.get(row[0]) })).filter((x) => x.s && (invUi.r < 0 || x.s.r === invUi.r));
+      shownRows = rows.map((x) => x.row);
+      disarm();
+      $("sellall").hidden = !rows.length;
       rows.sort(invUi.sort === "new" ? (a, b) => b.i - a.i : invUi.sort === "hi" ? (a, b) => b.row[4] - a.row[4] : (a, b) => a.row[4] - b.row[4]);
       $("grid").innerHTML = rows.slice(0, invUi.n).map(({ row, i, s }) => `<button type="button" class="skin c${s.r}" data-inv="${i}">
         <img src="${skinImg(s)}" alt="" loading="lazy" width="512" height="384"><span class="w">${star(s)}${row[2] ? '<span class="st">StatTrak™</span> ' : ""}${esc(s.w)}</span>
@@ -219,7 +238,49 @@
     $("isort").value = invUi.sort;
     $("isort").addEventListener("change", (e) => { invUi.sort = e.target.value; list(); });
     $("more").addEventListener("click", () => { invUi.n += 60; list(); });
+    /* two clicks: the first arms the button, the second sells */
+    let armT = 0;
+    function disarm() {
+      clearTimeout(armT);
+      const b = $("sellall");
+      b.classList.remove("armed");
+      b.innerHTML = `${invUi.r < 0 ? "Sell all" : "Sell all " + GRADE[invUi.r]} <b>${usd(invValue(shownRows))}</b>`;
+    }
+    $("sellall").addEventListener("click", (e) => {
+      const b = e.currentTarget;
+      if (!b.classList.contains("armed")) {
+        b.classList.add("armed");
+        b.innerHTML = `Confirm: sell ${shownRows.length.toLocaleString("en-US")} skin${shownRows.length === 1 ? "" : "s"} <b>${usd(invValue(shownRows))}</b>`;
+        armT = setTimeout(disarm, 4000);
+        return;
+      }
+      sell(shownRows);
+    });
     list();
+  }
+
+  /* ───────── selling ───────── */
+  const rowKey = (r) => JSON.stringify(r);
+  function sell(rows) {
+    load(); // another tab may have sold some of these already
+    const want = new Map();
+    rows.forEach((r) => want.set(rowKey(r), (want.get(rowKey(r)) || 0) + 1));
+    let n = 0, got = 0;
+    S.inv = S.inv.filter((r) => {
+      const k = rowKey(r), left = want.get(k);
+      if (!left) return true;
+      want.set(k, left - 1); n++; got += r[4];
+      return false;
+    });
+    if (!n) { toast("Already sold"); if (tab === "inventory") pageInventory(true); return; }
+    S.bal += got; S.sold += got;
+    save();
+    if ($("sheet").open) $("sheet").close();
+    const y = scrollY;
+    if (tab === "inventory") { pageInventory(true); scrollTo(0, y); }
+    paintTop();
+    tone(1568, 0, 0.12, 0.08, "triangle"); tone(2093, 0.07, 0.18, 0.07, "triangle");
+    toast((n === 1 ? "Sold for " : "Sold " + n.toLocaleString("en-US") + " skins for ") + usd(got));
   }
 
   /* ───────── skin details ───────── */
@@ -237,7 +298,9 @@
       ${row ? `<p class="meta">${wearName(s, row[1])}, float ${row[3].toFixed(9)}. Worth ${usd(row[4])} when opened${c ? " from the " + esc(c.name) : ""}.</p>${s.v ? "" : floatBar(row[3])}` : `<p class="meta">Float ${s.lo.toFixed(2)} to ${s.hi.toFixed(2)}</p>`}
       <div class="scroll"><table><thead><tr><th>Wear</th><th>Price</th>${s.q ? '<th class="st">StatTrak™</th>' : ""}</tr></thead><tbody>
       ${lines.map(([n, i]) => `<tr><td>${n}</td><td>${cell(s.p, s.ps, i)}</td>${s.q ? `<td>${cell(s.q, s.qs, i)}</td>` : ""}</tr>`).join("")}</tbody></table></div>
+      ${row ? `<button type="button" class="sell" data-sell>Sell for <b>${usd(row[4])}</b></button>` : ""}
       <p class="note">Steam Market price unless marked.${used.includes("m") ? " ¹ Lowest price on other marketplaces, because Steam has no usable sales." : ""}${used.includes("e") ? " ² Estimate: not for sale anywhere right now." : ""}</p></div>`;
+    if (row) sheet.querySelector("[data-sell]").addEventListener("click", () => sell([row]));
     sheet.showModal();
     sheet.scrollTop = 0;
   }
@@ -272,7 +335,7 @@
     if (run) return;
     load();
     if (S.pending) settle();
-    if (S.bal < c.price) { paintTop(); return toast("Not enough credits. Hit Refill to keep opening."); }
+    if (S.bal < c.price) { paintTop(); return toast("Not enough credits. Sell some skins or hit Refill."); }
 
     const d = drop(c);
     const id = Date.now().toString(36) + Math.floor(rnd() * 1e9).toString(36);
@@ -328,8 +391,8 @@
     const net = d.price - c.price, est = (d.st ? d.s.qs : d.s.ps)[d.w] === "e";
     box.innerHTML = `<div class="won c${d.s.r}"><i class="flash"></i><img class="pic" src="${skinImg(d.s)}" alt="">
       <div class="grade">${GRADE[d.s.r]}</div><h2>${d.s.r === 4 ? '<span class="star">★</span> ' : ""}${d.st ? '<span class="st">StatTrak™</span> ' : ""}${esc(d.s.w)} | ${esc(finish(d.s))}</h2>
-      <p class="cond">${wearName(d.s, d.w)}, float ${d.fl.toFixed(9)}</p>${d.s.v ? "" : floatBar(d.fl)}
-      <p class="money"><b>${usd(d.price)}</b><span class="${net < 0 ? "neg" : "pos"}">${signed(net)} after case${est ? ", estimated price" : ""}</span></p>
+      <p class="cond">${wearName(d.s, d.w)}, float ${d.fl.toFixed(9)}. Added to your inventory.</p>${d.s.v ? "" : floatBar(d.fl)}
+      <p class="money"><b>${usd(d.price)}</b><span class="${net < 0 ? "neg" : "pos"}">${signed(net)} vs case price${est ? ", estimated" : ""}</span></p>
       <div class="acts"><button type="button" class="open-btn" data-again>Open another <b>${usd(c.price)}</b></button><button type="button" class="plain" data-close>Back to case</button><button type="button" class="plain" data-inventory>Inventory</button></div></div>`;
     box.scrollTop = 0;
     box.querySelector("[data-again]").addEventListener("click", () => openCase(c));
