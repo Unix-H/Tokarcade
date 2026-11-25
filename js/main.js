@@ -7,6 +7,7 @@
     tictactoe: (v) => v + (v === 1 ? " win" : " wins"),
     reaction: (v) => v + " ms",
     breakout: (v) => v + " pts",
+    blockbuster: (v) => v + " pts",
   };
   document.querySelectorAll("[data-best]").forEach((el) => {
     const k = el.dataset.best;
